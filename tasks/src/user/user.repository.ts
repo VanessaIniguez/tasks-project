@@ -1,3 +1,4 @@
+import { AuthCredentialsDto } from './../auth/dto/auth-credentials.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserUtils } from './../utils/user.util';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -79,6 +80,18 @@ export class UserRepository extends Repository<User>{
         }catch(err){
             console.log(err);
             return false;
+        }
+    }
+
+    async  validateCredentials(authCredentialsDto: AuthCredentialsDto): Promise<User> {
+        const {email, password} = authCredentialsDto;
+
+        const user = await this.findOne({email: email, status: true});
+
+        if(user && await user.validatePassword(password)){
+            return user;
+        }else{
+            return null;
         }
     }
 }
