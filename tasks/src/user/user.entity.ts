@@ -1,6 +1,7 @@
 //import { Project } from './../project/project.entity';
 import { BaseEntity, PrimaryGeneratedColumn, Column, Entity, OneToMany } from "typeorm";
 import * as bcrypt from 'bcryptjs';
+import { Project } from "src/project/project.entity";
 
 @Entity()
 export class User extends BaseEntity{
@@ -27,6 +28,9 @@ export class User extends BaseEntity{
 
     @Column()
     status: boolean;
+
+    @OneToMany(type => Project, project => project.user)
+    projects: Project[];
 
 
     async validatePassword(password: string): Promise<boolean>{
