@@ -18,7 +18,9 @@ export class UserRepository extends Repository<User>{
         const user =  await this.findOne({id: id, status: true});
 
         if(!user){
+            console.log('Entro aquii');
             throw new NotFoundException('User not found');
+            
         }
         return user;
     }

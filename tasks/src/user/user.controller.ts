@@ -2,7 +2,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('user')
 export class UserController {
@@ -18,28 +19,26 @@ export class UserController {
         return this.userService.getUser(id);
 
     }
-
-    /**
-     * 
-     * @param createUserDto 
-     */
-    @Post()
-    createUser(@Body() createUserDto: CreateUserDto): Promise<User>{
-        return this.userService.createUser(createUserDto);
-    }
+    
 
     /**
      * 
      * @param updateUser
      */
-    @Post('/:id')
+    @Put('/:id')
     updateUser(@Param('id', ParseIntPipe)id: number, @Body() updateUserDto: UpdateUserDto): Promise<User>{
-
         return this.userService.updateUser(id,updateUserDto);
     }
 
-    @Patch('/:id')
+    /**
+     * 
+     * @param id 
+     */
+    @Put('/:id')
     updateStatusUser(@Param('id', ParseIntPipe)id: number): Promise<Boolean>{
         return this.userService.updateStatusUser(id);
     }
+
+
+    
 }

@@ -48,8 +48,8 @@ export class ProjectRepository extends Repository<Project>{
 
         const {name, description} = updateProjectDto;
 
-        project.name = name;
-        project.description = description;
+        project.name = name || project.name;
+        project.description = description || project.description;
 
         try {
             return await project.save();

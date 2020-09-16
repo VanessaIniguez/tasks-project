@@ -13,6 +13,13 @@ export class ProjectController {
 
     constructor(private projectService: ProjectService){}
 
+    @Get('/:id')
+    getProject(@GetUser() user: User, 
+               @Param('id', ParseIntPipe) id: number): Promise<Project>{
+        return this.projectService.getProject(user, id);
+
+    }
+
     @Get()
     getProjects(@GetUser() user: User): Promise<Project[]>{
 
