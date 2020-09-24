@@ -14,6 +14,8 @@ export class ProjectRepository extends Repository<Project>{
 
 
     async getProject(user: User, id: number): Promise<Project>{
+
+
         const project = await this.findOne({where: { id: id,  userId: user.id}});
 
         if(!project){

@@ -1,3 +1,4 @@
+import { UploadImageUtil } from './../utils/upload-image.util';
 import { AuthCredentialsDto } from './../auth/dto/auth-credentials.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserUtils } from './../utils/user.util';
@@ -8,12 +9,12 @@ import { NotFoundException, ConflictException, InternalServerErrorException } fr
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User>{
-
+    
     /**
      * 
      * @param id
      */
-    async getUser(id: number): Promise<User>{
+    async user(id: number): Promise<User>{
 
         const user =  await this.findOne({id: id, status: true});
 
@@ -51,7 +52,7 @@ export class UserRepository extends Repository<User>{
      */
     async updateUser(id: number, updateUserDto: UpdateUserDto):Promise<User> {
 
-        const user = await this.getUser(id);
+        const user = await this.user(id);
 
         const {name, lastName} = updateUserDto;
 
@@ -61,9 +62,8 @@ export class UserRepository extends Repository<User>{
         try {
          return await user.save();
         }catch(err){
-            if(err){
+            console.log(err);
                 throw new ConflictException('Error when updating the user');
-            }
         }
     }
 
@@ -73,7 +73,7 @@ export class UserRepository extends Repository<User>{
      */
     async updateStatusUser(id: number):Promise<Boolean>{
 
-        const user =  await this.getUser(id);
+        const user =  await this.user(id);
         user.status = false;
 
         try{
@@ -85,6 +85,10 @@ export class UserRepository extends Repository<User>{
         }
     }
 
+    /**
+     * 
+     * @param authCredentialsDto 
+     */
     async  validateCredentials(authCredentialsDto: AuthCredentialsDto): Promise<User> {
         const {email, password} = authCredentialsDto;
 
@@ -95,5 +99,30 @@ export class UserRepository extends Repository<User>{
         }else{
             return null;
         }
+    }
+
+
+    /**
+     * 
+     * @param file 
+     * @param user 
+     */
+    async uploadFile(file: any, user: User) {
+        UploadImageUtil.isImage(file);
+        const currentUser = await this.user(user.id);
+        
+        if(currentUser.image != null){
+            UploadImageUtil.deleteCurrentImage(currentUser.image);
+        }
+
+        currentUser.image = file.filename;
+
+        try {
+           return await currentUser.save();
+        } catch (err) {
+            throw new ConflictException('Error  at moment save image');
+        }
+        console.log(currentUser);
+        
     }
 }

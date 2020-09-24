@@ -17,13 +17,13 @@ export class UserService {
      * 
      * @param id 
      */
-   async getUser(id: number): Promise<User>{
-        return  await this.userRepository.getUser(id);
+    async user(id: number): Promise<User>{
+        return  await this.userRepository.user(id);
     }
 
     
-   async createUser(createUseDto: CreateUserDto): Promise<User> {
-        return await this.userRepository.createUser(createUseDto); 
+    async createUser(createUseDto: CreateUserDto): Promise<User> {
+        return await this.userRepository.createUser(createUseDto);
     }
 
     async updateUser(id: number, updateUser: UpdateUserDto): Promise<User> {
@@ -33,5 +33,9 @@ export class UserService {
 
     async updateStatusUser(id: number):  Promise<Boolean> {
         return await this.userRepository.updateStatusUser(id);
+    }
+
+    async uploadFile(file: any, user: User) {
+        return await this.userRepository.uploadFile(file, user);
     }
 }

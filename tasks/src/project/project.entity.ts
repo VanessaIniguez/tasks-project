@@ -26,5 +26,4 @@ export class Project extends BaseEntity{
     @OneToMany(type => Task, task => task.project)
     tasks: Task[];
 
-
 }

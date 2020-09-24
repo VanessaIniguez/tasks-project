@@ -1,9 +1,17 @@
+import { AuthGuard } from '@nestjs/passport';
+import { UploadImageUtil } from './../utils/upload-image.util';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Put, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { GetUser } from 'src/decorators/get-user.decorator';
+import { diskStorage } from 'multer';
+import { ApiBody } from '@nestjs/swagger';
+import { extname } from 'path';
+
+
 
 @Controller('user')
 export class UserController {
@@ -16,8 +24,7 @@ export class UserController {
      */
     @Get('/:id')
     getUser(@Param('id', ParseIntPipe) id: number): Promise<User>{
-        return this.userService.getUser(id);
-
+        return this.userService.user(id);
     }
     
 
@@ -26,7 +33,8 @@ export class UserController {
      * @param updateUser
      */
     @Put('/:id')
-    updateUser(@Param('id', ParseIntPipe)id: number, @Body() updateUserDto: UpdateUserDto): Promise<User>{
+    updateUser(@Param('id', ParseIntPipe)id: number,
+                @Body() updateUserDto: UpdateUserDto): Promise<User>{
         return this.userService.updateUser(id,updateUserDto);
     }
 
@@ -38,7 +46,5 @@ export class UserController {
     updateStatusUser(@Param('id', ParseIntPipe)id: number): Promise<Boolean>{
         return this.userService.updateStatusUser(id);
     }
-
-
-    
+   
 }
