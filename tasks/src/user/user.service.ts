@@ -4,9 +4,11 @@ import { User } from './user.entity';
 import { UserRepository } from './user.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Injectable()
 export class UserService {
+    
 
     constructor(
         @InjectRepository(UserRepository)
@@ -37,5 +39,13 @@ export class UserService {
 
     async uploadFile(file: any, user: User) {
         return await this.userRepository.uploadFile(file, user);
+    }
+
+    async updatePassword(updatePasswordDto: UpdatePasswordDto, user: User) {
+        return await this.userRepository.uploadPassword(updatePasswordDto, user);
+    }
+
+    async verifyPassword(updatePasswordDto: UpdatePasswordDto, user: User) {
+        return await this.userRepository.verifyPassword(updatePasswordDto, user);
     }
 }

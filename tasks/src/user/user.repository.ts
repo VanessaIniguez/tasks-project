@@ -6,6 +6,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { Repository, EntityRepository } from "typeorm";
 import { User } from "./user.entity";
 import { NotFoundException, ConflictException, InternalServerErrorException } from "@nestjs/common";
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User>{
@@ -120,9 +121,35 @@ export class UserRepository extends Repository<User>{
         try {
            return await currentUser.save();
         } catch (err) {
-            throw new ConflictException('Error  at moment save image');
+            throw new ConflictException('Error at moment save image');
         }
-        console.log(currentUser);
-        
+    }
+
+    async uploadPassword(updatePasswordDto: UpdatePasswordDto, user: User) {
+
+        const { password } = updatePasswordDto;
+
+        const currentUser = await this.user(user.id);
+
+        currentUser.password = await UserUtils.encryptPassword(password);
+
+        try {
+           return await currentUser.save();
+        } catch (error) {
+            throw new ConflictException('Error at moment update password');
+        }
+    }
+
+    async verifyPassword(updatePasswordDto: UpdatePasswordDto, user: User) {
+
+        const {password} = updatePasswordDto;
+        const currentUser = await this.user(user.id);
+
+        if(await currentUser.validatePassword(password)){
+            return true;
+        }else{
+            return false;
+        }
+
     }
 }

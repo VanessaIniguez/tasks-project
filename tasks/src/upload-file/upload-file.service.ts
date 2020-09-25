@@ -17,12 +17,11 @@ export class UploadFileService {
 
     async serveImage(image, res: any, user: User) {
         const currentUser = await this.userService.user(user.id);
-        const path =  `./src/uploads/user/${currentUser.image}`;
-
-        if(!existsSync(path)){
+        
+        if(currentUser.image !== image){
             throw new ConflictException('No image exists');
         }else{
-            return res.sendFile(image, { root: './src/uploads/user' });
+            return res.sendFile(currentUser.image, { root: './src/uploads/user' });
             
         }
     }
